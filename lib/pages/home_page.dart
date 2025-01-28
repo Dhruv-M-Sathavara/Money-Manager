@@ -2,6 +2,7 @@ import 'package:expance_manager/pages/accountts.dart';
 import 'package:expance_manager/pages/analysis.dart';
 import 'package:expance_manager/pages/more.dart';
 import 'package:flutter/material.dart';
+import 'package:expance_manager/functions/add.dart'; 
 
 
 class HomePage extends StatefulWidget {
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool Income = true,Expense = false , Loan = false;
+  
   int selectedIndex = 0; 
 
   final PageController pageController = PageController();
@@ -63,84 +64,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){showAddDialog(context);},
+      floatingActionButton: FloatingActionButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Addtask()));},
       backgroundColor: Colors.green.shade300,child: Icon(Icons.add,color: Colors.white,size: 30),),
     );
   }
 
-  //alert to addd 
-  //
-  //
-  //
-  Future<void> showAddDialog(BuildContext context) async {
-  return showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15)
-      ),
-      content: SingleChildScrollView(
-        child:StatefulBuilder(builder: (BuildContext context, StateSetter setDialogState
-        ){
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Select Option',style: TextStyle(fontSize: 15),),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.pop(context);
-                      },
-                      child: Icon(Icons.close,
-                      color: Colors.red,),
-                    ),
-                  
-                  ],
-                  ),
-                    Row(
-                      children: [
-                        categorybutton("Income", Income, Colors.green.shade300),
-                        categorybutton("Expanse", Income, Colors.red.shade300),
-                        categorybutton("Loan", Income, Colors.blueGrey.shade300),
-                      ],
-                    )
-              ],
-          );
-        },
-      ),
-    ),
-  )
-  );
-}
-
-
-//
-//
-//
-Widget categorybutton(String title,bool isSelected,Color color ){
-    return Material(
-      elevation: isSelected ? 5 : 0,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? color : Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.black : Colors.grey.shade600,
-          ),
-        ),
-      ),
-    );
-    
-}
 
 }
 
@@ -150,6 +78,8 @@ Widget categorybutton(String title,bool isSelected,Color color ){
 //
 
 class HomePageContent extends StatelessWidget {
+  const HomePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
