@@ -9,7 +9,9 @@ class Addtask extends StatefulWidget {
 
 class _AddtaskState extends State<Addtask> {
   bool Income = true, Expense = false, Loan = false;
-  String selectedCategory = "";
+
+  String? selectedCategory;
+  String? selectedPaymentMethod;
 
   final List<Map<String, dynamic>> categories = [
     {"icon": Icons.fastfood, "label": "Food"},
@@ -25,6 +27,12 @@ class _AddtaskState extends State<Addtask> {
     {"icon": Icons.card_giftcard, "label": "Gift"},
     {"icon": Icons.category, "label": "Other"},
   ];
+
+    final List <Map<String, dynamic>> accounts = [
+      {"icon":Icons.money, "label" : "Cash"},
+      {"icon":Icons.account_balance, "label":"Accounts"},
+      {"icon":Icons.credit_card ,"label":"Card"}
+    ];
 
   @override
   Widget build(BuildContext context) {
@@ -78,33 +86,72 @@ class _AddtaskState extends State<Addtask> {
                 ),
               ),
             ),
-            SizedBox(height: 20,),
-            GestureDetector(
-              onTap: () {
-                _showCategoryDialog();
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  enabled: false, 
-                  decoration: InputDecoration(
-                    labelText: "Category",
-                    labelStyle: TextStyle(
-                        fontSize: 15, color: Colors.grey.shade700),
-                  
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),),
-                    focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 1)),
-                  ),
-                  controller: TextEditingController(
-                      text: selectedCategory), 
+          
+            SizedBox(height: 20),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white,
+                  hint:  Text('Select Category',style: TextStyle(fontSize: 15),),
+                  value: selectedCategory,
+                  isExpanded: true,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCategory = newValue;
+                    });
+                  },
+                  items: categories.map((category) {
+                    return DropdownMenuItem<String>(
+                      value: category['label'],
+                      child: Row(
+                        children: [
+                          Icon(category['icon'], size: 20, color: Colors.blue),
+                          SizedBox(width: 10),
+                          Text(category['label']),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
+            SizedBox(height: 20,),
+            Container(
+              
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey,width: 1)
+              ),
+              child: DropdownButtonHideUnderline(child: DropdownButton(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white, hint: Text("Selected Account",style:TextStyle(fontSize:15),), value: selectedPaymentMethod, onChanged: (String? newMethod){
+                setState(() {
+                  selectedPaymentMethod = newMethod!;
+                });
+              },
+              items: accounts.map((accounts){
+                  return DropdownMenuItem<String>(
+                    value: accounts['label'],
+                    child: Row(
+                    
+                    children: [
+                      
+                    Icon(accounts['icon'], size: 20, color: Colors.blue),
+                    SizedBox(width: 10),
+                      
+                    Text(accounts['label'])],
+                  ));
+              }).toList(),
+              )),
+            )
           ],
         ),
       ),
+
     );
   }
 
@@ -149,67 +196,4 @@ class _AddtaskState extends State<Addtask> {
       ),
     );
   }
-void _showCategoryDialog() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text(
-          "Select Category",
-          style: TextStyle(fontSize: 15, color: Colors.blue),
-        ),
-        content: SingleChildScrollView(
-          child: SizedBox(
-            height: 300, 
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, 
-                crossAxisSpacing: 10, 
-                mainAxisSpacing: 10, 
-              ),
-              itemCount: categories.length,
-            
-               
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedCategory = categories[index]['label'];
-                    });
-                    Navigator.of(context).pop(); // 
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          categories[index]['icon'],
-                          size: 32,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        categories[index]['label'],
-                        style: const TextStyle(fontSize: 14),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
 }
