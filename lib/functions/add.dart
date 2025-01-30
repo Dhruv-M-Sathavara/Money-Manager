@@ -44,115 +44,157 @@ class _AddtaskState extends State<Addtask> {
           style: TextStyle(fontSize: 18),
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        color: Colors.white,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            color: Colors.white,
+            child: Column(
               children: [
-                categorybutton("Income", Income, Colors.green.shade300),
-                categorybutton("Expense", Expense, Colors.red.shade300),
-                categorybutton("Loan", Loan, Colors.blue.shade300),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Date",
-                  labelStyle:
-                      TextStyle(fontSize: 15, color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    categorybutton("Income", Income, Colors.green.shade300),
+                    categorybutton("Expense", Expense, Colors.red.shade300),
+                    categorybutton("Loan", Loan, Colors.blue.shade300),
+                  ],
                 ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Amount",
-                  labelStyle:
-                      TextStyle(fontSize: 15, color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1)),
+                SizedBox(height: 25),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: "Date",
+                      labelStyle:
+                          TextStyle(fontSize: 15, color: Colors.grey.shade700),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          
-            SizedBox(height: 20),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white,
-                  hint:  Text('Select Category',style: TextStyle(fontSize: 15),),
-                  value: selectedCategory,
-                  isExpanded: true,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedCategory = newValue;
-                    });
-                  },
-                  items: categories.map((category) {
-                    return DropdownMenuItem<String>(
-                      value: category['label'],
-                      child: Row(
-                        children: [
-                          Icon(category['icon'], size: 20, color: Colors.blue),
-                          SizedBox(width: 10),
-                          Text(category['label']),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+              SizedBox(height: 15,),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    keyboardType: TextInputType.numberWithOptions(),
+                    decoration: InputDecoration(
+                      labelText: "Amount",
+                      labelStyle:
+                          TextStyle(fontSize: 15, color: Colors.grey.shade700),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(height: 20,),
-            Container(
               
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey,width: 1)
+                SizedBox(height: 15),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white,
+                      hint:  Text('Select Category',style: TextStyle(fontSize: 15),),
+                      value: selectedCategory,
+                      isExpanded: true,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedCategory = newValue;
+                        });
+                      },
+                      items: categories.map((category) {
+                        return DropdownMenuItem<String>(
+                          value: category['label'],
+                          child: Row(
+                            children: [
+                              Icon(category['icon'], size: 20, color: Colors.blue),
+                              SizedBox(width: 10),
+                              Text(category['label']),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15,),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey, width: 1),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true, 
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      dropdownColor: Colors.white,
+                      hint: Text(
+                        "Selected Account",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      value: selectedPaymentMethod,
+                      onChanged: (String? newMethod) {
+                        setState(() {
+                          selectedPaymentMethod = newMethod!;
+                        });
+                      },
+                      items: accounts.map((account) {
+                        return DropdownMenuItem<String>(
+                          value: account['label'],
+                          child: Row(
+          
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(account['icon'], size: 20, color: Colors.blue),
+                                  SizedBox(width: 10),
+                                  Text(account['label']),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                SizedBox(height:15 ,),
+               Container(
+                padding: EdgeInsets.symmetric(horizontal:20),
+                child: TextField(
+                   decoration: InputDecoration(
+                      labelText: "Note",
+                      labelStyle: TextStyle(color: Colors.grey.shade700,fontSize: 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1)
+                      )   
+                   )
+                ),
+               ),
+                SizedBox(height: 25,),     
+                ElevatedButton(style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue.shade200,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  minimumSize: Size(100, 40)
+                ), onPressed: (){}, child: Text("Save", style: TextStyle(fontSize: 15 , color: Colors.white),))    
+                ]
+            ),
               ),
-              child: DropdownButtonHideUnderline(child: DropdownButton(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white, hint: Text("Selected Account",style:TextStyle(fontSize:15),), value: selectedPaymentMethod, onChanged: (String? newMethod){
-                setState(() {
-                  selectedPaymentMethod = newMethod!;
-                });
-              },
-              items: accounts.map((accounts){
-                  return DropdownMenuItem<String>(
-                    value: accounts['label'],
-                    child: Row(
-                    
-                    children: [
-                      
-                    Icon(accounts['icon'], size: 20, color: Colors.blue),
-                    SizedBox(width: 10),
-                      
-                    Text(accounts['label'])],
-                  ));
-              }).toList(),
-              )),
-            )
-          ],
         ),
-      ),
-
-    );
+      ));
   }
 
   Widget categorybutton(String title, bool isSelected, Color color) {
