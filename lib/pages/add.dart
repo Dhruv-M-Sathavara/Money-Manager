@@ -1,4 +1,6 @@
+import 'package:expance_manager/functions/database_conectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
 
 class Addtask extends StatefulWidget {
   const Addtask({super.key});
@@ -10,8 +12,15 @@ class Addtask extends StatefulWidget {
 class _AddtaskState extends State<Addtask> {
   bool Income = true, Expense = false, Loan = false;
 
+  TextEditingController amount = TextEditingController();
+  TextEditingController category = TextEditingController();
+  TextEditingController account = TextEditingController();
+  TextEditingController note = TextEditingController();
+  TextEditingController date = TextEditingController();
+
   String? selectedCategory;
   String? selectedPaymentMethod;
+  String? selecteddata;
 
   final List<Map<String, dynamic>> categories = [
     {"icon": Icons.fastfood, "label": "Food"},
@@ -64,6 +73,9 @@ class _AddtaskState extends State<Addtask> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    controller: date,
+                    readOnly: true,
+                    onTap: () => _selectDate(context),
                     decoration: InputDecoration(
                       labelText: "Date",
                       labelStyle:
@@ -79,6 +91,7 @@ class _AddtaskState extends State<Addtask> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    controller: amount,
                     keyboardType: TextInputType.numberWithOptions(),
                     decoration: InputDecoration(
                       labelText: "Amount",
@@ -93,38 +106,47 @@ class _AddtaskState extends State<Addtask> {
                 ),
               
                 SizedBox(height: 15),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(padding: EdgeInsets.symmetric(horizontal: 4), dropdownColor: Colors.white,
-                      hint:  Text('Select Category',style: TextStyle(fontSize: 15),),
-                      value: selectedCategory,
-                      isExpanded: true,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedCategory = newValue;
-                        });
-                      },
-                      items: categories.map((category) {
-                        return DropdownMenuItem<String>(
-                          value: category['label'],
-                          child: Row(
-                            children: [
-                              Icon(category['icon'], size: 20, color: Colors.blue),
-                              SizedBox(width: 10),
-                              Text(category['label']),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextFormField(
+                      controller: category,
+                      decoration: InputDecoration(
+                        hintText: "Select Category",
+                        suffixIcon: PopupMenuButton<String>(
+                          color: Colors.white,
+                          icon: Icon(Icons.arrow_drop_down), 
+                          onSelected: (String value) {
+                            category.text = value; 
+                            setState(() {
+                              selectedCategory = value;
+                            });
+                          },
+                          itemBuilder: (BuildContext context) {
+                            return categories.map((category) {
+                              return PopupMenuItem<String>(
+                                value: category['label'],
+                                child: Row(
+                                  children: [
+                                    Icon(category['icon'], size: 20, color: Colors.blue),
+                                    SizedBox(width: 10),
+                                    Text(category['label']),
+                                  ],
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
                     ),
                   ),
-                ),
+
                 SizedBox(height: 15,),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
@@ -133,45 +155,45 @@ class _AddtaskState extends State<Addtask> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey, width: 1),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      isExpanded: true, 
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      dropdownColor: Colors.white,
-                      hint: Text(
-                        "Selected Account",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      value: selectedPaymentMethod,
-                      onChanged: (String? newMethod) {
-                        setState(() {
-                          selectedPaymentMethod = newMethod!;
-                        });
-                      },
-                      items: accounts.map((account) {
-                        return DropdownMenuItem<String>(
-                          value: account['label'],
-                          child: Row(
-          
-                            children: [
-                              Row(
+                  child: TextFormField(
+                    controller: account,
+                    decoration: InputDecoration(
+                      hintText: "Select Account",
+                      suffixIcon: PopupMenuButton<String>(
+                        icon: Icon(Icons.arrow_drop_down),
+                        color: Colors.white, 
+                        onSelected: (String value) {
+                          account.text = value;
+                          setState(() {
+                            selectedPaymentMethod = value;
+                          });
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return accounts.map((account) {
+                            return PopupMenuItem<String>(
+                              value: account['label'],
+                              child: Row(
                                 children: [
                                   Icon(account['icon'], size: 20, color: Colors.blue),
                                   SizedBox(width: 10),
                                   Text(account['label']),
                                 ],
                               ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                            );
+                          }).toList();
+                        },
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
+
                 SizedBox(height:15 ,),
                Container(
                 padding: EdgeInsets.symmetric(horizontal:20),
                 child: TextField(
+                  controller: note,
                    decoration: InputDecoration(
                       labelText: "Note",
                       labelStyle: TextStyle(color: Colors.grey.shade700,fontSize: 15),
@@ -189,7 +211,23 @@ class _AddtaskState extends State<Addtask> {
                   backgroundColor: Colors.lightBlue.shade200,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   minimumSize: Size(100, 40)
-                ), onPressed: (){}, child: Text("Save", style: TextStyle(fontSize: 15 , color: Colors.white),))    
+                ), onPressed: (){
+                  String id = randomAlphaNumeric(10);
+                  Map<String,dynamic> money = {
+                    "Income Amount" : amount.text,
+                    "Category" : selectedCategory,
+                    "Accounts" : selectedPaymentMethod,
+                    "Note" : note.text,
+                    "Date" : date.text
+                  };
+
+                  if(Expense){
+                   DBOP().addExpance(money, id); 
+                  }
+                  if(Income){
+                    DBOP().addIncome(money, id);
+                  }
+                }, child: Text("Save", style: TextStyle(fontSize: 15 , color: Colors.white),))    
                 ]
             ),
               ),
@@ -238,4 +276,19 @@ class _AddtaskState extends State<Addtask> {
       ),
     );
   }
+
+    Future<void> _selectDate(BuildContext context) async {
+      final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        date.text = "${picked.day}-${picked.month}-${picked.year}";
+      });
+    }
+  }
+
 }
