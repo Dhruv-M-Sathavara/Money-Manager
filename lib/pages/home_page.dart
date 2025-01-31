@@ -2,7 +2,7 @@ import 'package:expance_manager/pages/accountts.dart';
 import 'package:expance_manager/pages/analysis.dart';
 import 'package:expance_manager/pages/more.dart';
 import 'package:flutter/material.dart';
-import 'package:expance_manager/functions/add.dart'; 
+import 'package:expance_manager/pages/add.dart'; 
 
 
 class HomePage extends StatefulWidget {
