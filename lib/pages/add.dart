@@ -1,15 +1,16 @@
-import 'package:expance_manager/functions/database_conectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+import 'package:expance_manager/functions/database_conectivity.dart';
 
-class Addtask extends StatefulWidget {
-  const Addtask({super.key});
+class AddTaskScreen extends StatefulWidget {
+  const AddTaskScreen({super.key});
 
   @override
-  State<Addtask> createState() => _AddtaskState();
+  
+  _AddTaskScreenState createState() => _AddTaskScreenState();
 }
 
-class _AddtaskState extends State<Addtask> {
+class _AddTaskScreenState extends State<AddTaskScreen> {
   bool Income = true, Expense = false, Loan = false;
 
   TextEditingController amount = TextEditingController();
@@ -20,7 +21,6 @@ class _AddtaskState extends State<Addtask> {
 
   String? selectedCategory;
   String? selectedPaymentMethod;
-  String? selecteddata;
 
   final List<Map<String, dynamic>> categories = [
     {"icon": Icons.fastfood, "label": "Food"},
@@ -37,258 +37,182 @@ class _AddtaskState extends State<Addtask> {
     {"icon": Icons.category, "label": "Other"},
   ];
 
-    final List <Map<String, dynamic>> accounts = [
-      {"icon":Icons.money, "label" : "Cash"},
-      {"icon":Icons.account_balance, "label":"Accounts"},
-      {"icon":Icons.credit_card ,"label":"Card"}
-    ];
+    final List<Map<String, dynamic>> categoriesIncome = [
+    {"icon": Icons.card_giftcard, "label":"Allowance"},
+    {"icon": Icons.attach_money, "label":"Salary"},
+    {"icon": Icons.trending_up, "label":"Bonus"},
+    {"icon": Icons.category, "label":"Other"},
+
+  ];
+
+  final List<Map<String, dynamic>> accounts = [
+    {"icon": Icons.money, "label": "Cash"},
+    {"icon": Icons.account_balance, "label": "Bank"},
+    {"icon": Icons.credit_card, "label": "Card"}
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 1,
+        centerTitle: true,
         title: const Text(
-          'Task Name',
-          style: TextStyle(fontSize: 18),
+          'Add Transaction',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
         ),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    categorybutton("Income", Income, Colors.green.shade300),
-                    categorybutton("Expense", Expense, Colors.red.shade300),
-                    categorybutton("Loan", Loan, Colors.blue.shade300),
+                    categoryButton("Income", Income, Colors.green.shade300),
+                    categoryButton("Expense", Expense, Colors.red.shade300),
+                    categoryButton("Loan", Loan, Colors.blue.shade300),
                   ],
                 ),
                 SizedBox(height: 25),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TextField(
-                    controller: date,
-                    readOnly: true,
-                    onTap: () => _selectDate(context),
-                    decoration: InputDecoration(
-                      labelText: "Date",
-                      labelStyle:
-                          TextStyle(fontSize: 15, color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1)),
-                    ),
-                  ),
-                ),
-              SizedBox(height: 15,),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TextField(
-                    controller: amount,
-                    keyboardType: TextInputType.numberWithOptions(),
-                    decoration: InputDecoration(
-                      labelText: "Amount",
-                      labelStyle:
-                          TextStyle(fontSize: 15, color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1)),
-                    ),
-                  ),
-                ),
-              
+                buildTextField("Date", date, true, prefixIcon: Icons.calendar_today, onTap: () => _selectDate(context)),
                 SizedBox(height: 15),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextFormField(
-                      controller: category,
-                      decoration: InputDecoration(
-                        hintText: "Select Category",
-                        suffixIcon: PopupMenuButton<String>(
-                          color: Colors.white,
-                          icon: Icon(Icons.arrow_drop_down), 
-                          onSelected: (String value) {
-                            category.text = value; 
-                            setState(() {
-                              selectedCategory = value;
-                            });
-                          },
-                          itemBuilder: (BuildContext context) {
-                            return categories.map((category) {
-                              return PopupMenuItem<String>(
-                                value: category['label'],
-                                child: Row(
-                                  children: [
-                                    Icon(category['icon'], size: 20, color: Colors.blue),
-                                    SizedBox(width: 10),
-                                    Text(category['label']),
-                                  ],
-                                ),
-                              );
-                            }).toList();
-                          },
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
+                buildTextField("Amount", amount, false, prefixIcon: Icons.attach_money, keyboardType: TextInputType.number),
+                SizedBox(height: 15),
+                buildDropdownField("Select Category", category,Income ? categoriesIncome :categories, (String value) {
+                  category.text = value;
+                  setState(() {
+                    selectedCategory = value;
+                  });
+                }),
+                SizedBox(height: 15),
+                buildDropdownField("Select Account", account, accounts, (String value) {
+                  account.text = value;
+                  setState(() {
+                    selectedPaymentMethod = value;
+                  });
+                }),
+                SizedBox(height: 15),
+                buildTextField("Note", note, false, prefixIcon: Icons.note),
+                SizedBox(height: 25),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    minimumSize: Size(double.infinity, 50),
                   ),
+                  onPressed: () {
+                    String id = randomAlphaNumeric(10);
+                    Map<String, dynamic> money = {
+                      "Amount": amount.text,
+                      "Category": selectedCategory,
+                      "Accounts": selectedPaymentMethod,
+                      "Note": note.text,
+                      "Date": date.text,
+                      "Type": Income ? "Income" : Expense ? "Expense" : "Loan",
+                    };
 
-                SizedBox(height: 15,),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey, width: 1),
-                  ),
-                  child: TextFormField(
-                    controller: account,
-                    decoration: InputDecoration(
-                      hintText: "Select Account",
-                      suffixIcon: PopupMenuButton<String>(
-                        icon: Icon(Icons.arrow_drop_down),
-                        color: Colors.white, 
-                        onSelected: (String value) {
-                          account.text = value;
-                          setState(() {
-                            selectedPaymentMethod = value;
-                          });
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return accounts.map((account) {
-                            return PopupMenuItem<String>(
-                              value: account['label'],
-                              child: Row(
-                                children: [
-                                  Icon(account['icon'], size: 20, color: Colors.blue),
-                                  SizedBox(width: 10),
-                                  Text(account['label']),
-                                ],
-                              ),
-                            );
-                          }).toList();
-                        },
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height:15 ,),
-               Container(
-                padding: EdgeInsets.symmetric(horizontal:20),
-                child: TextField(
-                  controller: note,
-                   decoration: InputDecoration(
-                      labelText: "Note",
-                      labelStyle: TextStyle(color: Colors.grey.shade700,fontSize: 15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1)
-                      )   
-                   )
-                ),
-               ),
-                SizedBox(height: 25,),     
-                ElevatedButton(style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue.shade200,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  minimumSize: Size(100, 40)
-                ), onPressed: (){
-                  String id = randomAlphaNumeric(10);
-                  Map<String,dynamic> money = {
-                    "Income Amount" : amount.text,
-                    "Category" : selectedCategory,
-                    "Accounts" : selectedPaymentMethod,
-                    "Note" : note.text,
-                    "Date" : date.text
-                  };
-
-                  if(Expense){
-                   DBOP().addExpance(money, id); 
-                  }
-                  if(Income){
                     DBOP().addIncome(money, id);
-                  }
-                }, child: Text("Save", style: TextStyle(fontSize: 15 , color: Colors.white),))    
-                ]
-            ),
-              ),
-        ),
-      ));
+                    Navigator.pop(context); 
+                  },
+                  child: Text("Save Transaction", style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),),
+        ),),
+    );
   }
 
-  Widget categorybutton(String title, bool isSelected, Color color) {
+  // **Transaction Type Button**
+  Widget categoryButton(String title, bool isSelected, Color color) {
     return GestureDetector(
       onTap: () {
-        if (title == "Income") {
-          Income = true;
-          Expense = false;
-          Loan = false;
-        }
-        if (title == "Expense") {
-          Income = false;
-          Expense = true;
-          Loan = false;
-        }
-        if (title == "Loan") {
-          Income = false;
-          Expense = false;
-          Loan = true;
-        }
-        setState(() {});
+        setState(() {
+          Income = (title == "Income");
+          Expense = (title == "Expense");
+          Loan = (title == "Loan");
+        });
       },
-      child: Material(
-        elevation: isSelected ? 5 : 0,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? color : Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.black : Colors.grey.shade600,
-            ),
-          ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? color : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: isSelected ? [BoxShadow(color: color.withOpacity(0.5), blurRadius: 5)] : [],
+        ),
+        child: Text(
+          title,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black54),
         ),
       ),
     );
   }
 
-    Future<void> _selectDate(BuildContext context) async {
-      final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+
+
+  ///
+  Widget buildTextField(String label, TextEditingController controller, bool readOnly, {IconData? prefixIcon, VoidCallback? onTap, TextInputType? keyboardType}) {
+    return TextField(
+      controller: controller,
+      readOnly: readOnly,
+      onTap: onTap,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.blueAccent) : null,
+        labelStyle: TextStyle(fontSize: 15, color: Colors.grey.shade700),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.blueAccent)),
+      ),
     );
-    if (picked != null) {
-      setState(() {
-        date.text = "${picked.day}-${picked.month}-${picked.year}";
-      });
-    }
   }
 
+
+///dropdown
+  Widget buildDropdownField(String hint, TextEditingController controller, List<Map<String, dynamic>> items, Function(String) onSelected) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: Icon(Icons.list, color: Colors.blueAccent),
+          suffixIcon: PopupMenuButton<String>(
+            icon: Icon(Icons.arrow_drop_down, color: Colors.blueAccent),
+            color: Colors.white, 
+            onSelected: onSelected,
+            itemBuilder: (BuildContext context) {
+              return items.map((item) {
+                return PopupMenuItem<String>(
+                  value: item['label'],
+                  child: Row(
+                    children: [
+                      Icon(item['icon'], size: 20, color: Colors.blue),
+                      SizedBox(width: 10),
+                      Text(item['label']),
+                    ],
+                  ),
+                );
+              }).toList();
+            },
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),);
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
+    if (picked != null) setState(() => date.text = "${picked.day}-${picked.month}-${picked.year}");
+  }
 }

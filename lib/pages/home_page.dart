@@ -1,9 +1,7 @@
-import 'package:expance_manager/pages/accountts.dart';
-import 'package:expance_manager/pages/analysis.dart';
-import 'package:expance_manager/pages/more.dart';
+import 'package:expance_manager/functions/database_conectivity.dart';
+import 'package:expance_manager/pages/add.dart';
 import 'package:flutter/material.dart';
-import 'package:expance_manager/pages/add.dart'; 
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,200 +11,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  int selectedIndex = 0; 
+  Stream? moneyop;
+  double totalBalance = 0.0;
+  double totalIncome = 0.0;
+  double totalExpense = 0.0;
 
-  final PageController pageController = PageController();
+  @override
+  void initState() {
+    super.initState();
+    load();
+  }
 
-  void onTapped(int index) {
-    setState(() {
-      selectedIndex = index;
+  load() async {
+    moneyop = await DBOP().getMoney('transaction');
+    moneyop!.listen((snapshot) {
+      double balance = 0.0;
+      double income = 0.0;
+      double expense = 0.0;
+      
+      for (var doc in snapshot.docs) {
+        double amount = double.tryParse(doc['Amount'] ?? '0') ?? 0.0;
+        if (doc['Type'] == 'Income') {
+          income += amount;
+        } else if (doc['Type'] == 'Expense') {
+          expense += amount;
+        }
+      }
+      balance = income - expense;
+
+      setState(() {
+        totalBalance = balance;
+        totalIncome = income;
+        totalExpense = expense;
+      });
     });
-    pageController.jumpToPage(index);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: PageView(
-        controller: pageController,
-        physics: const NeverScrollableScrollPhysics(), 
-        children: [
-          HomePageContent(),
-          Analysis(),
-          Accounts(),
-          More(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.white,
-        currentIndex: selectedIndex,
-        onTap: onTapped, 
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
-            label: 'Tras.',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
-            label: 'Analysis',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Accounts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
-            label: 'More',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Addtask()));},
-      backgroundColor: Colors.green.shade300,child: Icon(Icons.add,color: Colors.white,size: 30),),
-    );
-  }
+  Widget getWork() {
+    return StreamBuilder(
+      stream: moneyop,
+      builder: (context, AsyncSnapshot snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-
-}
-
-//
-//
-//
-//
-
-class HomePageContent extends StatelessWidget {
-  const HomePageContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Profile Section
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey.shade300,
-                  child: Icon(Icons.person, size: 30, color: Colors.white),
-                ),
-                SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hello',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'ExtremeOp07',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-
-          // Total Balance Section
-          //
-          //
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Balance',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                Text(
-                  '220,655',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-
-          // Income & Expense 
-          //
-          //
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Income Container
-                //
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(right: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade100,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Income',
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          '220,100',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Expense Container
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade100,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Expense',
-                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          '220,655',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-
-          // Transactions Section
-          Padding(
-            padding: EdgeInsets.all(16),
+        return Expanded(
+          child: ListView.builder(
+            itemCount: snapshot.data.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot docsnap = snapshot.data.docs[index];
+                  return  Padding(
+            padding: EdgeInsets.all(8),
             child: Container(
-              margin: EdgeInsets.only(bottom: 16),
-              padding: EdgeInsets.all(16),
+              
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -232,40 +90,168 @@ class HomePageContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '12.10.2025',
+                            docsnap['Date'],
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Hotel XYZ',
+                            docsnap['Note'],
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'Food',
+                            docsnap['Category'],
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  Text(
-                    '500',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+                  Column(children: [
+                    Text(
+                    '₹${docsnap['Amount'] ?? '0'}',
+                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color:  docsnap['Type'] == 'Income' ? Colors.green : Colors.red),
                   ),
                   Text(
-                    'Expense',
-                    style: TextStyle(color: Colors.red),
+                    docsnap['Type'],
+                    style: TextStyle(color:  docsnap['Type'] == 'Income' ? Colors.green : Colors.red),
                   ),
+                  ],)
+                  
                 
                 ],
                 
               ),
             ),
+          );
+              
+              // Card(
+              //   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              //   child: ListTile(
+              //     leading: CircleAvatar(
+              //       backgroundColor: docsnap['Type'] == 'Income' ? Colors.green.shade100 : Colors.red.shade100,
+              //       child: Icon(
+              //         docsnap['Type'] == 'Income' ? Icons.arrow_upward : Icons.arrow_downward,
+              //         color: docsnap['Type'] == 'Income' ? Colors.green : Colors.red,
+              //       ),
+              //     ),
+              //     title: Text(docsnap['Category'] ?? 'No Category', style: TextStyle(fontWeight: FontWeight.bold)),
+              //     subtitle: Text(docsnap['Date'] ?? 'No Date', style: TextStyle(color: Colors.grey)),
+              //     trailing: Text(
+              //       '₹${docsnap['Amount'] ?? '0'}',
+              //       style: TextStyle(
+              //         fontWeight: FontWeight.bold,
+              //         color: docsnap['Type'] == 'Income' ? Colors.green : Colors.red,
+              //       ),
+              //     ),
+              //   ),
+              // );
+            },
           ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      
+      body: Column(
+
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(padding:EdgeInsets.symmetric(vertical: 23)),
+           Row(
+              children: [
+                Padding(padding:EdgeInsets.symmetric(horizontal: 10) ),
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.grey.shade300,
+                  child: Icon(Icons.person, size: 30, color: Colors.white),
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hello',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'ExtremeOp07',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           
+          SizedBox(height: 15),
+          
+          
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 9),
+                child: Column(
+                  
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                    Text('Total Balance', style: TextStyle(fontSize: 16, color: Colors.grey,fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Text('₹${totalBalance.toStringAsFixed(2)}', style: TextStyle(fontSize: 32)),
+                    SizedBox(height: 15),
+                    Row(
+                    
+                      children: [
+                        dataContainer("Income", totalIncome, Colors.green.shade100, Colors.green),
+                        dataContainer("Expense", totalExpense, Colors.red.shade100, Colors.red),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+          
+          getWork(),
         ],
-        
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddTaskScreen()),
+          ).then((_) {
+            load();
+          });
+        },
+        backgroundColor: Colors.green.shade300,
+        child: Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
+  }
+
+  Widget dataContainer(String title, double amount, Color bgColor, Color textColor) {
+    return Expanded(
+      child: Container( 
+        margin: EdgeInsets.only(left:4),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+      
+       child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon(title == "Income" ?Icons.arrow_upward : Icons.arrow_downward),
+              Text(title, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('₹${amount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18)),
+            ],
+          ),
+        ),
+      );
+
   }
 }
