@@ -8,7 +8,7 @@ class DBOP{
   
 
   Stream<QuerySnapshot> getMoney(String back) {
-  return FirebaseFirestore.instance.collection(back).snapshots();
+  return FirebaseFirestore.instance.collection(back).orderBy('Date', descending: true).snapshots();
 }
 
   
