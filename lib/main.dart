@@ -1,5 +1,6 @@
 import 'package:expance_manager/firebase_options.dart';
 import 'package:expance_manager/pages/authenticaton.dart';
+import 'package:expance_manager/pages/bottomnavigation.dart';
 import 'package:expance_manager/pages/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       ),
       home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder:(context,snapshot){
         if(snapshot.hasData){
-          return HomePage();
+          return Navigation();
         }
         else{
           return Loginpage();

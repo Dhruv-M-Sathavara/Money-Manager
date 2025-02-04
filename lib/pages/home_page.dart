@@ -10,11 +10,23 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
+
   Stream? moneyop;
   double totalBalance = 0.0;
   double totalIncome = 0.0;
   double totalExpense = 0.0;
+  int selectedIndex = 0;
+
+  PageController pageController = PageController();
+
+    void onTapped(int index){
+    setState(() {
+      selectedIndex = index;
+    });
+    pageController.jumpToPage(index);
+  }
 
   @override
   void initState() {
@@ -23,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   load() async {
-    moneyop = await DBOP().getMoney('transaction');
+    moneyop = DBOP().getMoney('transaction');
     moneyop!.listen((snapshot) {
       double balance = 0.0;
       double income = 0.0;
@@ -159,7 +171,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       
       body: Column(
-
+        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(padding:EdgeInsets.symmetric(vertical: 23)),
@@ -216,6 +228,7 @@ class _HomePageState extends State<HomePage> {
           getWork(),
         ],
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -253,5 +266,9 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
+  
+
   }
+
+
 }
