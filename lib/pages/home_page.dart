@@ -94,8 +94,8 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: Colors.orange.shade100,
-                        child: Icon(Icons.fastfood, color: Colors.orange),
+                        backgroundColor: docsnap['Type'] == 'Income' ? Colors.green.shade100 : Colors.red.shade100,
+                        child: Icon(docsnap['Type'] == 'Income' ? Icons.arrow_upward : Icons.arrow_downward),
                       ),
                       SizedBox(width: 10),
                       Column(
