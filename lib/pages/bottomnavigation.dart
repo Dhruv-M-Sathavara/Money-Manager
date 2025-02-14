@@ -37,7 +37,7 @@ void onTap (int index){
       bottomNavigationBar: BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: "Tras."),
         BottomNavigationBarItem(icon: Icon(Icons.pie_chart),label: "Analysis"),
-        BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet),label: "Badget"),
+        BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet),label: "Accounts"),
         BottomNavigationBarItem(icon: Icon(Icons.more_horiz),label: "More")
 
       ],currentIndex: selectedIndex,
