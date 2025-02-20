@@ -9,7 +9,15 @@ class DBOP{
 
   Stream<QuerySnapshot> getMoney(String back) {
   return FirebaseFirestore.instance.collection(back).orderBy('Date', descending: true).snapshots();
-}
+  }
+
+  Future<void> deleteAll() async {
+      var collection = FirebaseFirestore.instance.collection("transaction");
+      var snapshots = await collection.get();
+      for (var doc in snapshots.docs) {
+        await doc.reference.delete();
+      }
+  }
 
   
 }

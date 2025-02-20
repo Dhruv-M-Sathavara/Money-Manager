@@ -115,6 +115,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       "Note": note.text,
                       "Date": date.text,
                       "Type": Income ? "Income" : Expense ? "Expense" : "Loan",
+                      "id" : id,
+                      
                     };
 
                     DBOP().addIncome(money, id);
