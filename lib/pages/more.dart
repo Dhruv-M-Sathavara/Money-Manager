@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expance_manager/functions/database_conectivity.dart';
 import 'package:expance_manager/pages/split.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class More extends StatefulWidget {
   const More({super.key});
@@ -10,6 +14,29 @@ class More extends StatefulWidget {
 }
 
 class _MoreState extends State<More> {
+
+  Future<void> backupdata() async{
+    final pdf = pw.Document();
+
+    QuerySnapshot snapshot  = await FirebaseFirestore.instance.collection('transaction').get();
+
+    pdf.addPage(
+      pw.Page(build: (pw.Context context){
+        return pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text("Trasaction History",style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold,)),
+            pw.SizedBox(height: 10),
+            for(var doc in snapshot.docs)
+              pw.Text(" => Date: ${doc['Date']} - Type:  ${doc['Type']} - Note: ${doc['Note']} - Category: ${doc['Category']} - Amount: ${doc['Amount']}  - Accounts: ${doc['Accounts']}" ),
+            
+          ]
+        );
+      })
+    );
+
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format)async => pdf.save());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +53,7 @@ class _MoreState extends State<More> {
               children: [
                 Column(
                   children: [
-                    Icon(Icons.backup, color: Colors.blue.shade300),
+                    IconButton(icon: Icon( Icons.backup), color: Colors.blue.shade300, onPressed: () { backupdata(); },),
                     Text("Backup")
                   ],
                 ),

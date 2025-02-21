@@ -35,6 +35,8 @@ dependencies:
   firebase_auth:
   cloud_firestore: any
   random_string: any
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
