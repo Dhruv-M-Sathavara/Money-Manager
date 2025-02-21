@@ -1,4 +1,5 @@
 import 'package:expance_manager/functions/database_conectivity.dart';
+import 'package:expance_manager/pages/split.dart';
 import 'package:flutter/material.dart';
 
 class More extends StatefulWidget {
@@ -66,7 +67,9 @@ class _MoreState extends State<More> {
                 ),
                 Column(
                   children: [
-                    Icon(Icons.people, color: Colors.green.shade300),
+                    IconButton(icon: Icon(Icons.people), color: Colors.green.shade300, onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Slitop()));
+                    },),
                     Text("Split")
                   ],
                 ),
