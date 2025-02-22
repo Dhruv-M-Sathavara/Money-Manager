@@ -19,11 +19,11 @@ class DBOP{
       }
   }
 
-  Future addsplit(Map<String, dynamic> money , String id) async{
-    return await FirebaseFirestore.instance.collection("Splitting Data").doc(id).set(money);
+  Future loan(Map<String, dynamic> vyaj , String id) async{
+    return await FirebaseFirestore.instance.collection("Loan").doc(id).set(vyaj);
   }
 
-  Stream<QuerySnapshot> getSplit(String backdata){
+  Stream<QuerySnapshot> getdata(String backdata){
     return FirebaseFirestore.instance.collection(backdata).snapshots();
   }
 

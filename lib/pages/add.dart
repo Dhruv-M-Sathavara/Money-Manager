@@ -76,7 +76,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   children: [
                     categoryButton("Income", Income, Colors.green.shade300),
                     categoryButton("Expense", Expense, Colors.red.shade300),
-                    categoryButton("Loan", Loan, Colors.blue.shade300),
+                  
                   ],
                 ),
                 SizedBox(height: 25),
