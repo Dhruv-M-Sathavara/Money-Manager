@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expance_manager/functions/database_conectivity.dart';
-import 'package:expance_manager/pages/split.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -92,15 +91,7 @@ class _MoreState extends State<More> {
                     Text("Delete History"),
                   ],
                 ),
-                Column(
-                  children: [
-                    IconButton(icon: Icon(Icons.people), color: Colors.green.shade300, onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Slitop()));
-                    },),
-                    Text("Split")
-                  ],
-                ),
-              ],
+              ]
             )
           ],
         ),
