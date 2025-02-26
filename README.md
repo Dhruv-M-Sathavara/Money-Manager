@@ -1,16 +1,13 @@
-# expance_manager
+# Money_manager
 
-A new Flutter project.
+Developed a cross-platform expense management application using Flutter and Firebase, enabling users to track their income and expenses efficiently.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+## Key Features:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Add Income & Expenses – Easily record transactions with category-based tracking.
+Expense & Income Analysis – Visualize spending patterns with detailed charts and reports.
+Account Management – Maintain multiple accounts to track balances separately.
+Generate PDF Reports – Export transaction history and financial summaries as PDFs.
+Interest Calculator – Compute interest on savings and loans for better financial planning.
