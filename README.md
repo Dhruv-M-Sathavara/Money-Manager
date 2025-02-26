@@ -2,8 +2,6 @@
 
 Developed a cross-platform expense management application using Flutter and Firebase, enabling users to track their income and expenses efficiently.
 
-## Getting Started
-
 ## Key Features:
 
 Add Income & Expenses – Easily record transactions with category-based tracking.
