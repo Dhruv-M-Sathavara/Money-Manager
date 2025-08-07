@@ -1,6 +1,6 @@
-# 💸 Money Manager
+# Money Manager
 
-![Money Manager Banner](./assets/money-manager-banner.png)
+![Money Manager Banner](./money_manager.png)
 
 **Money Manager** is a personal finance tracking mobile application built with **Flutter** that helps users take control of their finances. It provides tools for **expense categorization**, **budget planning**, and **summary analytics** to track spending habits and financial goals.
 
