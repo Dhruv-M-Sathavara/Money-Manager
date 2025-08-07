@@ -1,11 +1,15 @@
-# Money_manager
+# 💸 Money Manager
 
-Developed a cross-platform expense management application using Flutter and Firebase, enabling users to track their income and expenses efficiently.
+![Money Manager Banner](./assets/money-manager-banner.png)
 
-## Key Features:
+**Money Manager** is a personal finance tracking mobile application built with **Flutter** that helps users take control of their finances. It provides tools for **expense categorization**, **budget planning**, and **summary analytics** to track spending habits and financial goals.
 
-Add Income & Expenses – Easily record transactions with category-based tracking.
-Expense & Income Analysis – Visualize spending patterns with detailed charts and reports.
-Account Management – Maintain multiple accounts to track balances separately.
-Generate PDF Reports – Export transaction history and financial summaries as PDFs.
-Interest Calculator – Compute interest on savings and loans for better financial planning.
+## 🚀 Features
+
+- **Financial Dashboard** — Total balance, categorized expenses, and income summary
+- **Expense Categorization** — Classify expenses like food, bills, entertainment, etc.
+- **Budget Planning** — Set limits on spending categories
+- **Summary Analytics** — Monthly breakdown of spending patterns
+- **Cashy Chatbot** — Rule-based chatbot built with Dialogflow
+
+
